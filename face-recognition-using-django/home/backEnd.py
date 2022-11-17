@@ -117,18 +117,18 @@ class FaceRecognition:
 
         print ("\n Training faces. It will take a few seconds. Wait ...")
         faces,ids = getImagesAndLabels(path)
-        getModelFromServer()
+        # getModelFromServer()
         recognizer.read(BASE_DIR+'/home/trainer/trainer.yml')
         recognizer.train(faces, np.array(ids))
 
         # Save the model into trainer/trainer.yml
         recognizer.save(BASE_DIR+'/home/trainer/trainer.yml') # recognizer.save() worked on Mac, but not on Pi
-        sendModelToServer()
+        # sendModelToServer()
         print("\n {0} faces trained. Exiting Program".format(len(np.unique(ids))))
 
 
     def recognizeFace(self): 
-        getModelFromServer()
+        # getModelFromServer()
         print("~~~~ Model Downloaded From Server ~~~~~~~~")
         recognizer.read(BASE_DIR+'/home/trainer/trainer.yml')
         cascadePath = BASE_DIR+'/home/haarcascade_frontalface_default.xml'
