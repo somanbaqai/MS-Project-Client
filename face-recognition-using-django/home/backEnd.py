@@ -117,18 +117,18 @@ class FaceRecognition:
 
         print ("\n Training faces. It will take a few seconds. Wait ...")
         faces,ids = getImagesAndLabels(path)
-        # getModelFromServer()
+        getModelFromServer()
         recognizer.read(BASE_DIR+'/home/trainer/trainer.yml')
         recognizer.train(faces, np.array(ids))
 
         # Save the model into trainer/trainer.yml
         recognizer.save(BASE_DIR+'/home/trainer/trainer.yml') # recognizer.save() worked on Mac, but not on Pi
-        # sendModelToServer()
+        sendModelToServer()
         print("\n {0} faces trained. Exiting Program".format(len(np.unique(ids))))
 
 
     def recognizeFace(self): 
-        # getModelFromServer()
+        getModelFromServer()
         print("~~~~ Model Downloaded From Server ~~~~~~~~")
         recognizer.read(BASE_DIR+'/home/trainer/trainer.yml')
         cascadePath = BASE_DIR+'/home/haarcascade_frontalface_default.xml'
@@ -136,7 +136,7 @@ class FaceRecognition:
 
         font = cv2.FONT_HERSHEY_SIMPLEX
 
-        confidence = 0
+        confidence = 100
 
         # Retriving names from database
         # data = conn.execute('''select * from facedata''')
@@ -168,6 +168,7 @@ class FaceRecognition:
                 cv2.rectangle(img, (x,y), (x+w,y+h), (0,255,0), 2)
 
                 face_id, confidence = recognizer.predict(gray[y:y+h,x:x+w])
+                print("confidence:: " , confidence)
 
                 # Check if confidence is less then 100 ==> "0" is perfect match 
                 if (confidence < 100):
@@ -181,15 +182,16 @@ class FaceRecognition:
             cv2.imshow('Detect Face',img) 
 
             k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
-            print("exit key pressed :: " , k)
+            # print("exit key pressed :: " , k)
             if k == 27:
                 break
-            if confidence > 50:
+            if confidence < 45:
                 break
 
         print("\n Exiting Program")
         cam.release()
         cv2.destroyAllWindows()
-
+        if(confidence > 45):
+            return -1
 
         return face_id
