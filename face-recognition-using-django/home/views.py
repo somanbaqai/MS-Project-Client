@@ -3,6 +3,7 @@ from home.forms import RegisterForm
 from django.contrib import messages
 from home.backEnd import FaceRecognition
 from home.models import UserProfile
+from datetime import datetime
 
 facerecognition = FaceRecognition()
 
@@ -10,7 +11,7 @@ def home(request):
     return render(request, 'home/home.html')
 
 def register(request):
-
+    t1 = datetime.now()
     if request.POST:
         form = RegisterForm(request.POST or None)
         if form.is_valid():
@@ -18,6 +19,13 @@ def register(request):
             instance.save()
             messages.success(request, 'Successfully Registerd!')
             addFace(request.POST['face_id'])
+            t2 = datetime.now()
+            delta = t2 - t1
+            # time difference in seconds
+            print(f"Register: Time difference is {delta.total_seconds()} seconds")
+            # time difference in milliseconds
+            ms = delta.total_seconds() * 1000
+            print(f"Register: Time difference is {ms} milliseconds")
             return redirect('/')
         else:
             messages.error(request, "Account Register Failed!")
@@ -27,6 +35,13 @@ def register(request):
         'title' : 'Register Form',
         'form' : form
     }
+    t2 = datetime.now()
+    delta = t2 - t1
+    # time difference in seconds
+    print(f"Register2: Time difference is {delta.total_seconds()} seconds")
+    # time difference in milliseconds
+    ms = delta.total_seconds() * 1000
+    print(f"Register2: Time difference is {ms} milliseconds")
     return render(request, 'home/register.html', context)
 
 def addFace(face_id):
@@ -37,7 +52,17 @@ def addFace(face_id):
 
 
 def login(request):
+    t1 = datetime.now()
+
     face_id = facerecognition.recognizeFace()
+    t2 = datetime.now()
+    delta = t2 - t1
+    # time difference in seconds
+    print(f"Login: Time difference is {delta.total_seconds()} seconds")
+    # time difference in milliseconds
+    ms = delta.total_seconds() * 1000
+    print(f"Login: Time difference is {ms} milliseconds")
+
     print("face id predicted :: " , face_id)
     if(face_id == -1):
         return render(request, 'home/home.html')

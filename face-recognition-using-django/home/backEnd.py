@@ -2,11 +2,18 @@ import cv2
 import os
 import base64
 import requests
+# import threading
+# import matplotlib.pyplot as plt
+# from threading import Thread, Lock
+# plt.switch_backend('Agg') 
+from multiprocessing import Process, Manager, Pool
+from datetime import datetime
 
 # import sqlite3
 import numpy as np
 from PIL import Image
 from website.settings import BASE_DIR
+
 
 detector = cv2.CascadeClassifier(BASE_DIR+'/home/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -24,15 +31,34 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 # conn.execute('''create table if not exists facedata ( id int primary key, name char(20) not null)''')
 
 def getModelFromServer():
-    response = requests.get("http://192.168.18.128:8080/download/model",allow_redirects=True)
+    t1 = datetime.now()
+    response = requests.get("http://localhost:8080/download/model",allow_redirects=True)
     open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
+    print("~~~~ Model Downloaded From Server ~~~~~~~~")
+    t2 = datetime.now()
+    delta = t2 - t1
+    # time difference in seconds
+    print(f"Get Model: Time difference is {delta.total_seconds()} seconds")
+    # time difference in milliseconds
+    ms = delta.total_seconds() * 1000
+    print(f"get Model: Time difference is {ms} milliseconds")
+
 
 def sendModelToServer():
+    t1 = datetime.now()
     files = {"file" : open(BASE_DIR+'/home/trainer/trainer.yml','rb')}
-    response = requests.post("http://192.168.18.128:8080/upload/model", files=files)
+    response = requests.post("http://localhost:8080/upload/model", files=files)
     # open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
     print("~~~~ Model Uploaded To Server~~~~~~~~")
     print(" Uplaod API Response :: " , response)
+    t2 = datetime.now()
+    delta = t2 - t1
+    # time difference in seconds
+    print(f"Send Model: Time difference is {delta.total_seconds()} seconds")
+    # time difference in milliseconds
+    ms = delta.total_seconds() * 1000
+    print(f"Send Model: Time difference is {ms} milliseconds")
+
 
 
 class FaceRecognition: 
@@ -48,9 +74,19 @@ class FaceRecognition:
         print(" Uplaod API Response :: " , response)
    
 
-    def faceDetect(self, Entry1,):
+    def faceDetect(self, Entry1):
        
         face_id = Entry1
+        # pool = Pool(processes = 1)
+        # pool.
+        # print(pool.map(self.getDetectedFaceForRegistration, range(1),str(face_id)))
+        # proc = Process(target=self.getDetectedFaceForRegistration, args=(face_id))
+        p = Process(target=self.getDetectedFaceForRegistration, args=(face_id,))
+        p.start()
+        p.join()
+        # proc.start()
+        # proc.join()
+        # print(pool.map(self.getDetectedFaceForRegistration, face_id))
         # face_name = Entry2
         # try:
         #     conn.execute('''insert into facedata values ( ?, ?)''', (face_id, face_name))
@@ -59,9 +95,12 @@ class FaceRecognition:
         #     print("\n ERROR! This id alreeady exists in database!")
         #     print("\n Try agian with new id\n")
         #     exit()
-        cam = cv2.VideoCapture(0)
-        
+    def getDetectedFaceForRegistration(self,face_id):
 
+        print("received face id :: ")
+        print(face_id)
+        cam = cv2.VideoCapture(0)
+            
         count = 0
 
         while(True):
@@ -77,7 +116,7 @@ class FaceRecognition:
                 count += 1
 
                 # Save the captured image into the datasets folder
-                cv2.imwrite(BASE_DIR+'/home/dataset/User.' + str(face_id) + '.' + str(count) + ".jpg", gray[y:y+h,x:x+w])
+                cv2.imwrite(BASE_DIR+'/home/dataset/User.' + face_id + '.' + str(count) + ".jpg", gray[y:y+h,x:x+w])
 
                 cv2.imshow('Register Face', img)
 
@@ -128,8 +167,20 @@ class FaceRecognition:
 
 
     def recognizeFace(self): 
+
+        pool = Pool(processes = 1)
+        # print(pool.map(self.test, range(1)))
+        confidence , face_id= pool.map(self.getFaceForRecognizer, range(1))[0]
+        print("confidence recevied :: " , confidence)
+        print("face id recevied :: " , face_id)
+        
+        if(confidence > 45):
+            return -1
+
+        return face_id
+
+    def getFaceForRecognizer(self, id):
         getModelFromServer()
-        print("~~~~ Model Downloaded From Server ~~~~~~~~")
         recognizer.read(BASE_DIR+'/home/trainer/trainer.yml')
         cascadePath = BASE_DIR+'/home/haarcascade_frontalface_default.xml'
         faceCascade = cv2.CascadeClassifier(cascadePath)
@@ -181,6 +232,7 @@ class FaceRecognition:
             
             cv2.imshow('Detect Face',img) 
 
+
             k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
             # print("exit key pressed :: " , k)
             if k == 27:
@@ -191,7 +243,8 @@ class FaceRecognition:
         print("\n Exiting Program")
         cam.release()
         cv2.destroyAllWindows()
-        if(confidence > 45):
-            return -1
-
-        return face_id
+        return confidence, face_id
+        # globalConfidence = confidence
+        # return_dict[confidence] = confidence
+    
+     
