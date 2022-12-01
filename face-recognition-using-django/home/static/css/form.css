@@ -161,8 +161,7 @@
   
   .wrap-contact100 {
     width: 790px;
-    background: #fff;
-    border-radius: 2px;
+
     padding: 55px 95px 68px 95px;
   }
   
@@ -186,7 +185,7 @@
     display: block;
     font-family: Raleway-Black;
     font-size: 30px;
-    color: #333333;
+    color: #ffffff;
     line-height: 1.2;
     text-align: center;
     padding-bottom: 45px;
@@ -227,7 +226,7 @@
     background: transparent;
     font-family: Raleway-SemiBold;
     font-size: 18px;
-    color: #333333;
+    color: #ffffff;
     line-height: 1.2;
     padding: 0 25px;
   }
@@ -253,11 +252,11 @@
     left: -1px;
     pointer-events: none;
     border: 1px solid;
-    border-color: #d867c6;
+    /* border-color: #d867c6;
     border-color: -webkit-linear-gradient(45deg, #c77ff2, #e8519e);
     border-color: -o-linear-gradient(45deg, #c77ff2, #e8519e);
     border-color: -moz-linear-gradient(45deg, #c77ff2, #e8519e);
-    border-color: linear-gradient(45deg, #c77ff2, #e8519e);
+    border-color: linear-gradient(45deg, #c77ff2, #e8519e); */
   
     visibility: hidden;
     opacity: 0;
