@@ -17,8 +17,14 @@
 
 .wrap-profile {
   width: 950px;
-  background: #fff;
+  /* background: #fff; */
+  color: white;
   border-radius: 2px;
   padding: 55px 95px 68px 95px;
   text-align: left;
+}
+
+.wrap-profile > .row > h1{
+  width: 100%;
+  text-align: center;
 }

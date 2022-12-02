@@ -162,7 +162,8 @@
   .wrap-contact100 {
     width: 790px;
 
-    padding: 55px 95px 68px 95px;
+    /* padding: 55px 95px 68px 95px; */
+    margin-top: 8%;
   }
   
   
@@ -188,7 +189,7 @@
     color: #ffffff;
     line-height: 1.2;
     text-align: center;
-    padding-bottom: 45px;
+    padding-bottom: 70px;
   }
   
   
