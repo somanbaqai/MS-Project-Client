@@ -70,6 +70,7 @@ p {
 h1 {
   font-size: 3.5em;
   line-height: 1;
+  color: white;
 }
 h2 {
   font-size: 3em;
@@ -218,7 +219,7 @@ b.light-color {
 --------------------------------- */
 
 .main-area-wrapper {
-  height: calc(100% - 40px);
+  height: calc(100% - 00px);
   padding: 20px;
   background-size: cover;
 }

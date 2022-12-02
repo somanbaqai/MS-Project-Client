@@ -10,15 +10,20 @@
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background-image: url('/home/static/images/pic6.jpg');
+  background-image: url('/home/static/images/banner-shape.svg');
   
   
 }
 
 .wrap-profile {
   width: 950px;
-  background: #fff;
+  background: #ffffff1c;
   border-radius: 2px;
   padding: 55px 95px 68px 95px;
   text-align: left;
+}
+
+.wrap-profile .row h1 {
+  width: 100%;
+  text-align: center
 }
