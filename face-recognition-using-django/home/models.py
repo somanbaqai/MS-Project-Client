@@ -10,6 +10,13 @@ class UserProfile(models.Model):
     email = models.CharField(max_length = 20)
     bio = models.CharField(max_length = 200)
     image=models.ImageField(upload_to='profile_image', blank=True)
-
     def __str__(self):
         return self.name
+
+class ModelConfiguration(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    endpointForFetching = models.CharField(max_length=1000)
+    endpointForPosting = models.CharField(max_length=1000)
+
+    def __str__(self):
+        return self.endpointForFetching

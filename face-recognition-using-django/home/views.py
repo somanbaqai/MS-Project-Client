@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from home.forms import RegisterForm
+from home.forms import RegisterForm,ModelConfigurationForm
 from django.contrib import messages
 from home.backEnd import FaceRecognition
-from home.models import UserProfile
+# from home.models import UserProfile, ModelConfiguration
 from datetime import datetime
 
 facerecognition = FaceRecognition()
@@ -79,5 +79,43 @@ def welcome(request, face_id):
     
 
     return render(request, 'home/profile.html')
-    # return render(request, 'home/profile.html', data)
-    
+
+
+def configuration(request):
+    t1 = datetime.now()
+    print("submitting :: ")
+    if request.POST:
+        # print("if 1")
+        form = ModelConfigurationForm(request.POST or None)
+        print("if 1 ::  ", form)
+
+        if form.is_valid():
+            print("if 2")
+            instance = form.save(commit=False)
+            instance.save()
+            messages.success(request, 'Successfully Configured!')
+            # addFace(request.POST['face_id'])
+            t2 = datetime.now()
+            delta = t2 - t1
+            # time difference in seconds
+            print(f"Register: Time difference is {delta.total_seconds()} seconds")
+            # time difference in milliseconds
+            ms = delta.total_seconds() * 1000
+            print(f"Register: Time difference is {ms} milliseconds")
+            return redirect('/')
+        else:
+            messages.error(request, "Configuration Update Failed!")
+
+    form = ModelConfigurationForm()
+    context = {
+        'title' : 'Configuration Form',
+        'form' : form
+    }
+    t2 = datetime.now()
+    delta = t2 - t1
+    # time difference in seconds
+    print(f"Register2: Time difference is {delta.total_seconds()} seconds")
+    # time difference in milliseconds
+    ms = delta.total_seconds() * 1000
+    print(f"Register2: Time difference is {ms} milliseconds")
+    return render(request, 'home/configuration.html', context)

@@ -14,6 +14,10 @@ import numpy as np
 from PIL import Image
 from website.settings import BASE_DIR
 
+import django
+django.setup()
+from home.models import  ModelConfiguration
+
 
 detector = cv2.CascadeClassifier(BASE_DIR+'/home/haarcascade_frontalface_default.xml')
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -32,7 +36,9 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 def getModelFromServer():
     t1 = datetime.now()
-    response = requests.get("http://localhost:8080/download/model",allow_redirects=True)
+    config = ModelConfiguration.objects.last()
+    print("config for fetching model from server :: " , config.endpointForFetching)
+    response = requests.get(config.endpointForFetching,allow_redirects=True)
     open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
     print("~~~~ Model Downloaded From Server ~~~~~~~~")
     t2 = datetime.now()
@@ -46,8 +52,10 @@ def getModelFromServer():
 
 def sendModelToServer():
     t1 = datetime.now()
+    config = ModelConfiguration.objects.last()
+    print("config for posting model to server :: " , config.endpointForPosting)
     files = {"file" : open(BASE_DIR+'/home/trainer/trainer.yml','rb')}
-    response = requests.post("http://localhost:8080/upload/model", files=files)
+    response = requests.post(config.endpointForPosting, files=files)
     # open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
     print("~~~~ Model Uploaded To Server~~~~~~~~")
     print(" Uplaod API Response :: " , response)
@@ -64,11 +72,15 @@ def sendModelToServer():
 class FaceRecognition: 
 
     def getModelFromServer(self):
-        response = requests.get("http://192.168.18.128:8080/download/model",allow_redirects=True)
+        config = ModelConfiguration.objects.last()
+        print("config for fetching model from server :: " , config.endpointForFetching)
+        response = requests.get(config.endpointForFetching,allow_redirects=True)
         open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
     def sendModelToServer(self):
+        config = ModelConfiguration.objects.last()
+        print("config for posting model to server :: " , config.endpointForPosting)
         files = {"file" : open(BASE_DIR+'/home/trainer/trainer.yml','rb')}
-        response = requests.post("http://192.168.18.128:8080/upload/model", files=files)
+        response = requests.post(config.endpointForPosting, files=files)
         # open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
         print("~~~~ Model Uploaded To Server~~~~~~~~")
         print(" Uplaod API Response :: " , response)

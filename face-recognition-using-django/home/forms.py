@@ -1,5 +1,5 @@
 from django import forms
-from home.models import UserProfile
+from home.models import UserProfile, ModelConfiguration
 
 class RegisterForm(forms.ModelForm):
 
@@ -14,4 +14,13 @@ class RegisterForm(forms.ModelForm):
             'email',
             'bio',
             'image',
+        )
+
+class ModelConfigurationForm(forms.ModelForm):
+
+    class Meta:
+        model = ModelConfiguration
+        fields = (
+            'endpointForFetching',
+            'endpointForPosting',
         )
