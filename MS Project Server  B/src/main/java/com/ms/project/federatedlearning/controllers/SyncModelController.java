@@ -35,7 +35,7 @@ public class SyncModelController {
     @PostMapping("/upload/model")
     public ResponseHandler<SyncModelResponse> uploadFile(@Valid @RequestParam("file") MultipartFile uploadedModelYMLFile)
             throws IOException {
-        logger.info("Uploading Model from Server A");
+        logger.info("Uploading Model from Server B");
 
         SyncModelResponse response = modelSyncService.syncModel(uploadedModelYMLFile);
 

@@ -35,7 +35,7 @@ public class TransferModelController {
 
     @GetMapping("/download/model")
     public ResponseEntity<?> downloadFile() throws IOException {
-        logger.info("Downloading Model from Server A");
+        logger.info("Downloading Model from Server B");
         return modelTransferService.transferModelToClient();
     }
 
