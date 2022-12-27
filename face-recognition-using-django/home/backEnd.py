@@ -13,6 +13,7 @@ from datetime import datetime
 import numpy as np
 from PIL import Image
 from website.settings import BASE_DIR
+from datetime import date
 
 import django
 django.setup()
@@ -36,7 +37,8 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 def getModelFromServer():
     t1 = datetime.now()
-    config = ModelConfiguration.objects.last()
+    # config = ModelConfiguration.objects.last()
+    config = ModelConfiguration.objects.filter(startingDate__lte = date.today()).filter(endDate__gte = date.today()).last()
     print("config for fetching model from server :: " , config.endpointForFetching)
     response = requests.get(config.endpointForFetching,allow_redirects=True)
     open(BASE_DIR+'/home/trainer/trainer.yml','wb').write(response.content)
@@ -52,7 +54,8 @@ def getModelFromServer():
 
 def sendModelToServer():
     t1 = datetime.now()
-    config = ModelConfiguration.objects.last()
+    # config = ModelConfiguration.objects.last()
+    config = ModelConfiguration.objects.filter(startingDate__lte = date.today()).filter(endDate__gte = date.today()).last()
     print("config for posting model to server :: " , config.endpointForPosting)
     files = {"file" : open(BASE_DIR+'/home/trainer/trainer.yml','rb')}
     response = requests.post(config.endpointForPosting, files=files)

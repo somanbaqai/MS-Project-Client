@@ -23,4 +23,6 @@ class ModelConfigurationForm(forms.ModelForm):
         fields = (
             'endpointForFetching',
             'endpointForPosting',
+            'startingDate',
+            'endDate'
         )

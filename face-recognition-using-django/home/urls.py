@@ -8,6 +8,6 @@ urlpatterns = [
     url(r'^register/', views.register),
     url(r'^addFace/', views.addFace),
     url(r'^welcome/(?P<face_id>\d+)/$', views.welcome),
-    url(r'^configuration/', views.configuration)
-    
+    url(r'^configuration/', views.configuration),
+    url(r'^configerror/',views.configMissing)
 ]

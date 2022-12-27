@@ -2,16 +2,26 @@ from django.shortcuts import render, redirect
 from home.forms import RegisterForm,ModelConfigurationForm
 from django.contrib import messages
 from home.backEnd import FaceRecognition
-# from home.models import UserProfile, ModelConfiguration
-from datetime import datetime
+from home.models import UserProfile, ModelConfiguration
+from datetime import datetime, date
 
 facerecognition = FaceRecognition()
 
 def home(request):
     return render(request, 'home/home.html')
 
+def configMissing(request):
+    print("config missing page")
+    return render (request,'home/configerror.html')
+
+
 def register(request):
     t1 = datetime.now()
+    ModelConfiguration.objects.filter(endDate__lt = date.today()).all().delete()
+    config = ModelConfiguration.objects.filter(startingDate__lte = date.today()).filter(endDate__gte = date.today())
+    print("confg :: ", config.last())
+    if(config.last() is None):
+        return render(request,'home/configerror.html')
     if request.POST:
         form = RegisterForm(request.POST or None)
         if form.is_valid():
@@ -53,7 +63,11 @@ def addFace(face_id):
 
 def login(request):
     t1 = datetime.now()
-
+    ModelConfiguration.objects.filter(endDate__lt = date.today()).all().delete()
+    config = ModelConfiguration.objects.filter(startingDate__lte = date.today()).filter(endDate__gte = date.today())
+    print("confg :: ", config.last())
+    if(config.last() is None):
+        return render(request,'home/configerror.html')
     face_id = facerecognition.recognizeFace()
     t2 = datetime.now()
     delta = t2 - t1
@@ -84,6 +98,13 @@ def welcome(request, face_id):
 def configuration(request):
     t1 = datetime.now()
     print("submitting :: ")
+    ModelConfiguration.objects.filter(endDate__lt = date.today()).all().delete()
+    # config = ModelConfiguration.objects.filter(startingDate__lte = date.today()).filter(endDate__gte = date.today())
+    # print("confg :: ", config.last())
+    # if(config.last() is None):
+    #     return render(request,'home/configerror.html')
+        # print("config :: " , config.last().startingDat)
+    # ModelConfiguration.delet
     if request.POST:
         # print("if 1")
         form = ModelConfigurationForm(request.POST or None)
@@ -119,3 +140,5 @@ def configuration(request):
     ms = delta.total_seconds() * 1000
     print(f"Register2: Time difference is {ms} milliseconds")
     return render(request, 'home/configuration.html', context)
+
+
