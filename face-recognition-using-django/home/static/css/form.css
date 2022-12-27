@@ -475,5 +475,8 @@ textarea.input100 {
   }
 }
 
-
+.btn-hov-pink-txt:hover {
+  /* background: none; */
+  color: #f84982 !important;
+}
 
