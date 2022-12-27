@@ -255,9 +255,9 @@ b.light-color {
   margin: 20px 0 50px;
   padding: 13px 35px;
   border-radius: 50px;
-  border: 2px solid #a7a472;
+  border: 2px solid #F84982;
   color: #fff;
-  background: #8c893f;
+  background: #F84982;
 }
 
 .main-area .notify-btn:hover {
